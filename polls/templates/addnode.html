@@ -1,0 +1,101 @@
+{% load static %}
+{% load fontawesome_5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <title>Página Inicial</title>
+</head>
+<body class="back-cuerpo nav-fixed">
+  <nav class="navbar navbar-expand-lg bg-body-tertiary p-2">
+        
+    <div  id="layoutSidenav_nav" >
+    <div class="container-fluid">
+      
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <div class="">        
+              <a href="{% url 'getGateway' %}">           
+                  <img src="./../static/logo_app.png" widht="70" height="70" class="pt-2 " alt="Logo AlLoRa">
+              </a>
+          </div>
+        </ul>
+        <ul class="navbar-nav p-2">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getGateway' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Gateway</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getNodos' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Nodes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getData' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Dashboard</a>
+          </li>
+         
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+  <hr class="" color="#4CA1D9" style="width: 100%;">
+      <div class="p-3">
+      <form action="{% url 'getNodos' %}?addnode=1" method="post">
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div
+                class="row justify-content-center text-center"
+                style="max-height: 200px; overflow: hidden"
+            >
+                <h3>Add Node</h3>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="11111111-1" value="{{name}}" >
+                                <label for="floatingInput">Name</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="mac_address" name="mac_address" placeholder="11111111-1" value="{{mac_address}}" >
+                                <label for="floatingInput">MAC Address</label>
+                            </div>
+                            
+                            <div class="text-center mb-3">
+
+                                <label for="sleep_mesh">Sleep Mesh:</label>
+                                <select id="sleep_mesh" name="sleep_mesh">
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                  </select>
+                                <label for="active">Active:</label>
+                                <select id="active" name="active">
+                                    <option value="true">True</option>
+                                    <option value="false">False</option>
+                                </select>
+                                
+                            </div>
+                            <div class="text-center mb-3">
+                                <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+        
+        </div>
+      </form>
+    </div>
+</body>
+</html>

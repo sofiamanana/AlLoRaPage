@@ -1,0 +1,185 @@
+{% load static %}
+{% load fontawesome_5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <title>Página Inicial</title>
+</head>
+<body class="back-cuerpo nav-fixed">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary p-2">
+        
+        <div  id="layoutSidenav_nav" >
+        <div class="container-fluid">
+          
+          <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+              <div class="">        
+                  <a href="{% url 'getGateway' %}">           
+                      <img src="./../static/logo_app.png" widht="70" height="70" class="pt-2 " alt="Logo AlLoRa">
+                  </a>
+              </div>
+            </ul>
+            <ul class="navbar-nav p-2">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'getGateway' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Gateway</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'getNodos' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Nodes</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="{% url 'getData' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Data</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Dashboard</a>
+              </li>
+             
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
+      <hr class="" color="#4CA1D9" style="width: 100%;">
+     
+      <div class="p-3">
+      <form action="{% url 'getNodos' %}" method="get">
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div
+                class="row justify-content-center text-center"
+                style="max-height: 200px; overflow: hidden"
+            >
+                <h3>Nodes</h3>
+            </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <div class="card p-2">
+                    <div>
+                    <form action="{% url 'addNode' %}" method="get">
+                        <div class="col p-3">
+                            <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                            <a href="{% url 'addNode' %}" class="text-light">Add Node</a>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-striped" id="tabla">
+                    <thead>
+                        <tr>
+                            <th scope="col">Name</th>
+                            <th scope="col">MAC Address</th>
+                            <th scope="col">Sleep Mesh</th>
+                            <th scope="col">Active</th>
+                            <th scope="col">Spreading Factor</th>
+                            <th scope="col"> </th>
+                            <th scope="col"> </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for nodo in nodos %}
+                        <tr>
+                            <td>{{nodo.name}}</td>
+                            <td>{{nodo.mac_address}}</td>
+                            <td> 
+                                <form action="" method="get">
+                                    
+                                        <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&mesh=1">
+                                            {% if nodo.sleep_mesh %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-floating"
+                                                style="background-color: #88C139; color: white;">
+                                                <i class="fas fa-check-circle" stye="color: #88C139;"></i>
+                                            </button>
+                                            {% else %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-floating"
+                                                style="background-color: grey; color: white;">
+                                                <i class="fas fa-times-circle"></i>
+                                            </button>
+                                            {% endif %}
+                                        </a>
+                                    
+                                </form>
+                                
+                            </td>
+                            <td> 
+                                <form action="" method="get">
+                                    
+                                        <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&active=1">
+                                            {% if nodo.active %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-floating" style="background-color: #88C139; color: white;">
+                                                <i class="fas fa-check-circle"></i>
+                                            </button>
+                                            {% else %}
+                                            <button
+                                                type="button"
+                                                class="btn btn-floating"
+                                                style="background-color: grey; color: white;">
+                                                <i class="fas fa-times-circle"></i>
+                                            </button>
+                                            {% endif %}
+                                        </a>
+                                    
+                                </form>
+                                
+                            </td>
+
+                            <td>
+                                <div class="">
+                                    <select id="sf" name="sf">
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                    </select>
+                                </div>
+                                
+                            </td>
+                            
+                                <form action="" method="get">
+                                    <td>
+                                    <a href="{% url 'addNode' %}?name={{nodo.name}}">
+                                    <button
+                                        type="button"
+                                        class="btn btn-floating"
+                                        style="background-color: #878787; color: white;">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </a>
+                                </td>
+                                </form>
+                                <form action="" method="get">
+                                    <td>
+                                    <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&erase=1">
+                                    <button
+                                        type="button"
+                                        class="btn btn-floating"
+                                        style="background-color: #DA3636; color: white;">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </a>
+                                </td>
+                                </form>
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        </div>
+    </div>
+</body>
+</html>

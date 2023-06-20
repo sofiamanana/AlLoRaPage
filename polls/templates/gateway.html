@@ -1,0 +1,207 @@
+{% load static %}
+{% load fontawesome_5 %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+	  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <title>Página Inicial</title>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary p-2">
+        
+    <div  id="layoutSidenav_nav" >
+    <div class="container-fluid">
+      
+      <div class="collapse navbar-collapse" id="navbar">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <div class="">        
+              <a href="{% url 'getGateway' %}">           
+                  <img src="./../static/logo_app.png" widht="70" height="70" class="pt-2 " alt="Logo AlLoRa">
+              </a>
+          </div>
+        </ul>
+        <ul class="navbar-nav p-2">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getGateway' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Gateway</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getNodos' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Nodes</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="{% url 'getData' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Data</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Dashboard</a>
+          </li>
+         
+        </ul>
+        
+      </div>
+    </div>
+  </nav>
+  <hr class="" color="#4CA1D9" style="width: 100%;">
+      
+      <div class="p-3">
+        <form action="{% url 'getNodos' %}" method="get">
+            {% csrf_token %}
+            <div
+                class="row justify-content-center text-center"
+                style="max-height: 200px; overflow: hidden"
+            >
+                <h3>Gateway</h3>
+            </div>
+                  <div class="row justify-content-center">
+                    <div class="col-10">
+                        <div class="card p-2">
+                    <table class="table table-striped table-hover" id="tabla">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Mesh Mode</th>
+                                <th scope="col">Frecuency</th>
+                                <th scope="col">Spreading Factor</th>
+                                <th scope="col"> </th>
+                                <th scope="col"> </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{gateway.name}}</td>
+                                <td>{{gateway.mesh_mode}}</td>
+                                <td>{{gateway.frecuency}}</td>
+                                <td>{{gateway.sf}}</td>
+                                <td>
+                                  {% if gateway.state %}
+                                  <form action="" method="get">
+                                    
+                                    <a href="{% url 'getGateway' %}?stop=1">
+                                        <button
+                                            type="button"
+                                            class="btn btn-floating"
+                                            style="background-color: grey; color: white;">
+                                            <i class="fas fa-stop"></i>
+                                        </button>
+                                    </a>
+                                
+                                  </form>
+                                  {% else %}
+                                        <form action="" method="get">
+                                          
+                                          <a href="{% url 'getGateway' %}?activateg=1">
+                                              <button
+                                                  type="button"
+                                                  class="btn btn-floating"
+                                                  style="background-color: #88C139; color: white;">
+                                                  <i class="fas fa-play"></i>
+                                              </button>
+                                          </a>
+                                      
+                                  </form>
+                                  {% endif %}
+                            </td>
+                            <td>
+                              <form action="" method="get">
+                                    
+                                <a href="{% url 'getGateway' %}?reload=1">
+                                    <button
+                                        type="button"
+                                        class="btn btn-floating"
+                                        style="background-color: #4CA1D9; color: white;">
+                                        <i class="fas fa-redo-alt"></i>
+                                    </button>
+                                </a>
+                            
+                              </form>
+                            </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+        </form>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-4">
+          <div class="card">
+            <canvas id="grafico-torta"></canvas>
+            
+          </div>
+          
+      </div>
+      <div class="col-4">
+        <div class="card">
+          <canvas id="grafico-puntos"></canvas>
+        </div>
+      </div>
+    </div>
+    
+    
+</body>
+<script>
+  // Obtén el contexto del canvas
+  var ctx = document.getElementById('grafico-torta').getContext('2d');
+  var etiquetas = {{ names|safe }};
+  var valores = {{ values|safe }};
+  var colores = {{ colores|safe }}
+  // Define los datos para el gráfico de torta
+  var data = {
+    labels: etiquetas, // Nombres de cada sector
+    datasets: [{
+      data: valores, // Valores de cada sector
+      backgroundColor: colores // Colores de cada sector
+    }]
+  };
+
+  // Configura y muestra el gráfico de torta
+  var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      aspectRatio: 1
+    }
+  });
+</script>
+<script>
+  // Obtén el contexto del canvas
+  var ctx = document.getElementById('grafico-puntos').getContext('2d');
+
+  // Obtiene los datos desde el template
+  var coordenadas_x = {{ coordenadas_x|safe }};
+  var coordenadas_y = {{ coordenadas_y|safe }};
+
+  // Define los datos para el gráfico de puntos
+  var data = {
+    labels: ['Estado'],
+    datasets: [{
+      data: coordenadas_x.map(function(value, index) {
+        return { x: value, y: coordenadas_y[index] };
+      }),
+      backgroundColor: '#4CA1D9',
+      borderColor: '#4CA1D9',
+      fill: false,
+      tension: 0.2
+    }]
+  };
+
+  // Configura y muestra el gráfico de puntos
+  var myChart = new Chart(ctx, {
+    type: 'line',
+    data: data,
+    options: {
+      responsive: true,
+      aspectRatio: 1
+    }
+  });
+</script>
+
+</html>
