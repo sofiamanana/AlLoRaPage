@@ -1,5 +1,6 @@
+import os
 from django.shortcuts import redirect, render
-from django.http import HttpResponse, JsonResponse
+from django.http import FileResponse, HttpResponse, HttpResponseNotFound, JsonResponse
 from django.conf import settings
 import functions
 from django.template import loader
@@ -9,6 +10,10 @@ import functions
 import numpy as np
 import requests
 import classes
+from django.templatetags.static import static
+import io
+import zipfile
+import shutil
 
 def getNodos(request):
 
@@ -202,7 +207,84 @@ def addNode(request):
     return render(request, "addnode.html", context)
 
 def getData(request):
-    context = {
-        'data': 'data',
-    }
+    if request.method == 'GET':
+        response = requests.get('http://127.0.0.1:8002/api/getData/')
+        data = response.json()
+        if response.status_code == 200:
+            download = request.GET.get('download')
+            download_all = request.GET.get('download_all')
+            node = request.GET.get('node')
+            context = {
+                'nodos': data["mac_address"],
+            }
+            #limpiar static:
+            cur_path = settings.BASE_DIR
+            ruta_json = str(Path(cur_path, 'polls/', 'static/data_all/'))
+            directorios = next(os.walk(ruta_json))[1]
+            for directorio in directorios:
+                ruta_carpeta = Path(ruta_json, directorio)
+                shutil.rmtree(ruta_carpeta)
+            cur_path = settings.BASE_DIR
+            ruta_json = str(Path(cur_path, 'polls/', 'static/data/'))
+            archivos = os.listdir(ruta_json)
+            for archivo in archivos:
+                ruta_archivo = Path(ruta_json, archivo)
+                os.remove(ruta_archivo)
+
+
+            if download:
+                response = requests.get('http://127.0.0.1:8002/api/downloadDataNode/',data={'node': node})
+                print('entre')
+                if response.status_code == 200:
+                    data = response.json()
+                    print(data)
+                    # Renderizar la plantilla y pasar la URL del archivo ZIP
+                    # Nombre del archivo JSON
+                    nombre_archivo = "data.json"
+                    cur_path = settings.BASE_DIR
+                    ruta_json = str(Path(cur_path, 'polls/', 'static/data/'))
+                    ruta_json = str(Path(ruta_json, nombre_archivo))
+
+                    with open(ruta_json, 'w') as archivo:
+                        json.dump(data, archivo)
+                        
+                    with open(ruta_json, "rb") as fprb:
+                        response = HttpResponse(fprb.read(), content_type="json")
+                        response["Content-Disposition"] = "attachment; filename=data.json"
+                        return response
+            context = {
+                'nodos': data["mac_address"],
+            }
+            if download_all:
+                print('entre')
+                response = requests.get('http://127.0.0.1:8002/api/downloadAll/')
+                data = response.json()
+                nombre_archivo = "data.json"
+                cur_path = settings.BASE_DIR
+                ruta_json = Path(cur_path, 'polls/', 'static/data_all/')
+                i = 0
+                nombres_archivos = []
+                for mac in data["mac_address"]:
+                    nombres_archivos.append(mac)
+                    ruta = Path(ruta_json, mac)
+                    ruta.mkdir(parents=True, exist_ok=True)
+                    ruta_j = str(Path(ruta, nombre_archivo))
+                    with open(ruta_j, 'w') as archivo:
+                        json.dump(data["data"][i], archivo)
+                    i+=1
+
+                
+                cur_path = settings.BASE_DIR
+                ruta_carpeta = Path(cur_path, 'polls/', 'static/data_all/')
+                buffer = io.BytesIO()
+                with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_buffer:
+                    for root, _, files in os.walk(ruta_carpeta):
+                        for archivo in files:
+                            ruta_archivo = os.path.join(root, archivo)
+                            rel_path = os.path.relpath(ruta_archivo, ruta_carpeta)
+                            zip_buffer.write(ruta_archivo, arcname=rel_path)
+                response = HttpResponse(buffer.getvalue(), content_type='application/zip')
+                response['Content-Disposition'] = 'attachment; filename="files.zip"'
+                return response
+            
     return render(request, "data.html", context)

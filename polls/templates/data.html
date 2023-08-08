@@ -63,7 +63,7 @@
                       <form action="{% url 'addNode' %}" method="get">
                           <div class="col p-3">
                               <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
-                              <a href="{% url 'addNode' %}" class="text-light">Download All</a>
+                              <a href="{% url 'getData' %}?download_all=1" class="text-light">Download All</a>
                               </button>
                           </div>
                       </form>
@@ -72,102 +72,28 @@
                       <thead>
                           <tr>
                               <th scope="col">MAC Address</th>
-                              <th scope="col">Available Data</th>
                               <th scope="col">Download</th>
                           </tr>
                       </thead>
                       <tbody>
                           {% for nodo in nodos %}
                           <tr>
-                              <td>{{nodo.name}}</td>
-                              <td>{{nodo.mac_address}}</td>
+                              <td>{{nodo}}</td>
+                              
                               <td> 
                                   <form action="" method="get">
                                       
-                                          <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&mesh=1">
-                                              {% if nodo.sleep_mesh %}
-                                              <button
-                                                  type="button"
-                                                  class="btn btn-floating"
-                                                  style="background-color: #88C139; color: white;">
-                                                  <i class="fas fa-check-circle" stye="color: #88C139;"></i>
-                                              </button>
-                                              {% else %}
-                                              <button
-                                                  type="button"
-                                                  class="btn btn-floating"
-                                                  style="background-color: grey; color: white;">
-                                                  <i class="fas fa-times-circle"></i>
-                                              </button>
-                                              {% endif %}
-                                          </a>
-                                      
-                                  </form>
-                                  
-                              </td>
-                              <td> 
-                                  <form action="" method="get">
-                                      
-                                          <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&active=1">
-                                              {% if nodo.active %}
+                                          <a href="{% url 'getData' %}?download=1&node={{nodo}}">
                                               <button
                                                   type="button"
                                                   class="btn btn-floating" style="background-color: #88C139; color: white;">
-                                                  <i class="fas fa-check-circle"></i>
+                                                  <i class="fas fa-download"></i>
                                               </button>
-                                              {% else %}
-                                              <button
-                                                  type="button"
-                                                  class="btn btn-floating"
-                                                  style="background-color: grey; color: white;">
-                                                  <i class="fas fa-times-circle"></i>
-                                              </button>
-                                              {% endif %}
                                           </a>
                                       
                                   </form>
                                   
                               </td>
-  
-                              <td>
-                                  <div class="">
-                                      <select id="sf" name="sf">
-                                          <option value="7">7</option>
-                                          <option value="8">8</option>
-                                          <option value="9">9</option>
-                                          <option value="10">10</option>
-                                          <option value="11">11</option>
-                                          <option value="12">12</option>
-                                      </select>
-                                  </div>
-                                  
-                              </td>
-                              
-                                  <form action="" method="get">
-                                      <td>
-                                      <a href="{% url 'addNode' %}?name={{nodo.name}}">
-                                      <button
-                                          type="button"
-                                          class="btn btn-floating"
-                                          style="background-color: #878787; color: white;">
-                                          <i class="fas fa-edit"></i>
-                                      </button>
-                                  </a>
-                                  </td>
-                                  </form>
-                                  <form action="" method="get">
-                                      <td>
-                                      <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&erase=1">
-                                      <button
-                                          type="button"
-                                          class="btn btn-floating"
-                                          style="background-color: #DA3636; color: white;">
-                                          <i class="fa fa-trash"></i>
-                                      </button>
-                                  </a>
-                                  </td>
-                                  </form>
-                              
                           </tr>
                           {% endfor %}
                       </tbody>
