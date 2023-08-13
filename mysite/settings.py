@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'polls',
     'rest_framework',
-    'fontawesome_5'
+    'fontawesome_5',
+    'leaflet'
 ]
 
 MIDDLEWARE = [

@@ -22,10 +22,10 @@ def getNodos(request):
 
     if response.status_code == 200:
         data = response.json()
-        print(data['nodes'])
         rows = functions.rowsToNodo(data)
 
         nodo = request.GET.get('nodo')
+        print('nodoooo:',nodo)
 
         if nodo:
             active = request.GET.get('active')
@@ -57,40 +57,43 @@ def getNodos(request):
         rows = []
 
     if request.method == 'POST':
+        print('entreeeee')
         name = request.POST.get('name')
         mac_address = request.POST.get('mac_address')
         sleep_mesh = request.POST.get('sleep_mesh')
         active = request.POST.get('active')
+        listening_time = request.POST.get('listening_time')
 
         nodo = {
             'name': name,
             'mac_address': mac_address,
             'sleep_mesh': sleep_mesh,
             'active': active,
+            'listening_time': listening_time
         }
+        
 
-        response = requests.post('http://127.0.0.1:8002/api/deleteNode/',data={'name': name}) 
+        response = requests.get('http://127.0.0.1:8002/api/getNode/',data={'mac_address': mac_address}) 
         data = response.json()
-
+        print('entre2')
+        print(data)
+        print(nodo)
         if response.status_code == 200:
-            response = requests.get('http://127.0.0.1:8002/api/getNode/',data={'name': name}) 
-            data = response.json()
-            if response.status_code == 200:
-                if data["node"]:
-                    response = requests.post('http://127.0.0.1:8002/api/updateNode/',data=nodo) 
-                    data = response
-                    if response.status_code == 200:
-                        data = response.json()
-                        rows = functions.rowsToNodo(data)
-                        return redirect('getNodos')
-                else:
-                    response = requests.post('http://127.0.0.1:8002/api/addNode/',data=nodo) 
-                    data = response
-                    print(nodo)
-                    if response.status_code == 200:
-                        data = response.json()
-                        rows = functions.rowsToNodo(data)
-                        return redirect('getNodos')
+            if data["node"]:
+                response = requests.post('http://127.0.0.1:8002/api/updateNode/',data=nodo) 
+                data = response
+                print('entre3')
+                if response.status_code == 200:
+                    data = response.json()
+                    rows = functions.rowsToNodo(data)
+                    return redirect('getNodos')
+            else:
+                response = requests.post('http://127.0.0.1:8002/api/addNode/',data=nodo) 
+                data = response
+                if response.status_code == 200:
+                    data = response.json()
+                    rows = functions.rowsToNodo(data)
+                    return redirect('getNodos')
 
     context = {
         'nodos': rows,
@@ -182,7 +185,8 @@ def addNode(request):
     if request.method == 'GET':
 
         name = request.GET.get('name')
-        response = requests.get('http://127.0.0.1:8002/api/getNode/',data={'name': name}) 
+        mac_address = request.GET.get('mac_address')
+        response = requests.get('http://127.0.0.1:8002/api/getNode/',data={'mac_address': mac_address}) 
         data = response.json()
         if response.status_code == 200:
             nodo = data["node"]
@@ -191,17 +195,20 @@ def addNode(request):
                 mac_address = nodo['mac_address']
                 sleep_mesh = nodo['sleep_mesh']
                 active = nodo['active']
+                listening_time = nodo['listening_time']
             else:
                 name = ''
                 mac_address = ''
                 sleep_mesh = ''
                 active = ''
+                listening_time = ''
 
     context = {
         'name': name,
         'mac_address': mac_address,
         'sleep_mesh': sleep_mesh,
         'active': active,
+        'listening_time': listening_time
     }
 
     return render(request, "addnode.html", context)

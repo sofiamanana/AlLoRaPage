@@ -4,6 +4,7 @@ class Nodo:
         self.mac_address = row[1]
         self.sleep_mesh = row[2]
         self.active = row[3]
+        self.listening_time = row[4]
 
 class Gateway:
     def __init__(self, row):

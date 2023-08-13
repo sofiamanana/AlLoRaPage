@@ -76,7 +76,8 @@
                             <th scope="col">MAC Address</th>
                             <th scope="col">Sleep Mesh</th>
                             <th scope="col">Active</th>
-                            <th scope="col">Spreading Factor</th>
+                            <th scope="col">SF</th>
+                            <th scope="col">Listening Time</th>
                             <th scope="col"> </th>
                             <th scope="col"> </th>
                         </tr>
@@ -149,8 +150,9 @@
                             </td>
                             
                                 <form action="" method="get">
+                                    <td>{{nodo.listening_time}}</td>
                                     <td>
-                                    <a href="{% url 'addNode' %}?name={{nodo.name}}">
+                                    <a href="{% url 'addNode' %}?mac_address={{nodo.mac_address}}">
                                     <button
                                         type="button"
                                         class="btn btn-floating"
