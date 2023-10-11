@@ -33,9 +33,6 @@
                 <a class="nav-link active" aria-current="page" href="{% url 'getNodos' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Nodes</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="{% url 'getData' %}" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Data</a>
-              </li>
-              <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="#" style="color: #4CA1D9; font-weight: bold; font-size: larger;">Dashboard</a>
               </li>
              
@@ -60,14 +57,27 @@
         <div class="row justify-content-center">
             <div class="col-10">
                 <div class="card p-2">
-                    <div>
-                    <form action="{% url 'addNode' %}" method="get">
-                        <div class="col p-3">
-                            <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
-                            <a href="{% url 'addNode' %}" class="text-light">Add Node</a>
-                            </button>
-                        </div>
-                    </form>
+                    
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-sm">
+                            <form action="{% url 'addNode' %}" method="get">
+                                <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                <a href="{% url 'addNode' %}" class="text-light">Add Node</a>
+                                </button>
+                            </form>
+                            
+                          </div>
+                          <div class="col-sm"></div>
+                          <div class="col-sm"></div>
+                          <div class="col-sm justify-content-end">
+                            <form action="{% url 'getNodos' %}" method="get">
+                                    <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                <a href="{% url 'getNodos' %}?download_all=1" class="text-light">Download All</a>
+                                </button>
+                            </form>
+                          </div>
+                    </div>
                 </div>
                 <table class="table table-striped" id="tabla">
                     <thead>
@@ -78,6 +88,7 @@
                             <th scope="col">Active</th>
                             <th scope="col">SF</th>
                             <th scope="col">Listening Time</th>
+                            <th scope="col"> </th>
                             <th scope="col"> </th>
                             <th scope="col"> </th>
                         </tr>
@@ -162,6 +173,20 @@
                                 </a>
                                 </td>
                                 </form>
+                                <td> 
+                                    <form action="" method="get">
+                                        
+                                            <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&download=1">
+                                                <button
+                                                    type="button"
+                                                    class="btn btn-floating" style="background-color: #88C139; color: white;">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </a>
+                                        
+                                    </form>
+                                    
+                                </td>
                                 <form action="" method="get">
                                     <td>
                                     <a href="{% url 'getNodos' %}?nodo={{nodo.mac_address}}&erase=1">
@@ -174,6 +199,7 @@
                                 </a>
                                 </td>
                                 </form>
+                                
                             
                         </tr>
                         {% endfor %}

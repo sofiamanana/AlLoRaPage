@@ -11,6 +11,7 @@ click-plugins==1.1.1
 click-repl==0.2.0
 Django==4.2.1
 django-fontawesome-5==1.0.18
+django-leaflet==0.29.0
 djangorestframework==3.14.0
 docker==6.1.1
 idna==3.4
