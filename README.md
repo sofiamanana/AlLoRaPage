@@ -1,4 +1,4 @@
 # AlLoRaPage
 
 Front End of AlLoRa App Server.
-To run: <python manage.py runserver>
+To run: <python manage.py runserver 8001>

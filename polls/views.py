@@ -7,9 +7,7 @@ from django.template import loader
 from pathlib import Path
 import json
 import functions
-import numpy as np
 import requests
-import classes
 from django.templatetags.static import static
 import io
 import zipfile
@@ -20,7 +18,7 @@ def index(request):
 
 def getNodos(request):
 
-    response = requests.get('http://servicio1:8000/api/nodes/')
+    response = requests.get('http://127.0.0.1:8000/api/nodes/')
     data = response
 
     if response.status_code == 200:
@@ -37,21 +35,21 @@ def getNodos(request):
             
 
             if active:
-                response = requests.post('http://servicio1:8000/api/setActiveNode/',data={'nodo': nodo}) 
+                response = requests.post('http://127.0.0.1:8000/api/setActiveNode/',data={'nodo': nodo}) 
                 data = response
                 if response.status_code == 200: 
                     data = response.json()
                     rows = functions.rowsToNodo(data)
                     return redirect('getNodos')
             if mesh:
-                response = requests.post('http://servicio1:8000/api/setMeshNode/',data={'nodo': nodo}) 
+                response = requests.post('http://127.0.0.1:8000/api/setMeshNode/',data={'nodo': nodo}) 
                 data = response
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
                     return redirect('getNodos')
             if erase:
-                response = requests.post('http://servicio1:8000/api/deleteNode/',data={'nodo': nodo}) 
+                response = requests.post('http://127.0.0.1:8000/api/deleteNode/',data={'nodo': nodo}) 
                 data = response
                 if response.status_code == 200:
                     data = response.json()
@@ -71,13 +69,12 @@ def getNodos(request):
                 for archivo in archivos:
                     ruta_archivo = Path(ruta_json, archivo)
                     os.remove(ruta_archivo)
-                response = requests.get('http://servicio1:8000/api/downloadDataNode/',data={'node': nodo})
+                response = requests.get('http://127.0.0.1:8000/api/downloadDataNode/',data={'node': nodo})
                 
                 if response.status_code == 200:
                     data = response.json()
+                    print(data)
                     
-                    # Renderizar la plantilla y pasar la URL del archivo ZIP
-                    # Nombre del archivo JSON
                     nombre_archivo = "data.json"
                     cur_path = settings.BASE_DIR
                     ruta_json = str(Path(cur_path, 'polls/', 'static/data/'))
@@ -97,7 +94,7 @@ def getNodos(request):
         if download_all:
             print('download all')
             
-            response = requests.get('http://servicio1:8000/api/downloadAll/')
+            response = requests.get('http://127.0.0.1:8000/api/downloadAll/')
             data = response.json()
             nombre_archivo = "data.json"
             cur_path = settings.BASE_DIR
@@ -130,7 +127,6 @@ def getNodos(request):
         rows = []
 
     if request.method == 'POST':
-        print('entreeeee')
         name = request.POST.get('name')
         mac_address = request.POST.get('mac_address')
         sleep_mesh = request.POST.get('sleep_mesh')
@@ -146,14 +142,14 @@ def getNodos(request):
         }
         
 
-        response = requests.get('http://servicio1:8000/api/getNode/',data={'mac_address': mac_address}) 
+        response = requests.get('http://127.0.0.1:8000/api/getNode/',data={'mac_address': mac_address}) 
         data = response.json()
         print('entre2')
         print(data)
         print(nodo)
         if response.status_code == 200:
             if data["node"]:
-                response = requests.post('http://servicio1:8000/api/updateNode/',data=nodo) 
+                response = requests.post('http://127.0.0.1:8000/api/updateNode/',data=nodo) 
                 data = response
                 print('entre3')
                 if response.status_code == 200:
@@ -161,7 +157,7 @@ def getNodos(request):
                     rows = functions.rowsToNodo(data)
                     return redirect('getNodos')
             else:
-                response = requests.post('http://servicio1:8000/api/addNode/',data=nodo) 
+                response = requests.post('http://127.0.0.1:8000/api/addNode/',data=nodo) 
                 data = response
                 if response.status_code == 200:
                     data = response.json()
@@ -177,80 +173,45 @@ def getNodos(request):
 def getGateway(request):
     if request.method == 'GET':
         
-        response = requests.get('http://servicio1:8000/api/gateway/')
+        response = requests.get('http://127.0.0.1:8000/api/gateway/')
         data = response
 
         if response.status_code == 200:
-            response2 = requests.get('http://servicio1:8000/api/getState/')
+            response2 = requests.get('http://127.0.0.1:8000/api/getState/')
             state = response2.json()["state"]
             data = response.json()
             gateway = functions.jsonToGateway(data, state)
         else:
             gateway = []
-
-        response = requests.get('http://servicio1:8000/api/nodes/')
-        data = response
-
-        if response.status_code == 200:
-            data = response.json()
-            print(data['nodes'][0]['name'])
-            rows = []
             
-            rows = functions.rowsToNodo(data)
-            
-            names = functions.nodesNames(data)
-            values = []
-            i = 0
-            while i<len(names):
-                values.append(round(100/len(names)))
-                i+=1
-            colores = []
-            for nodo in rows:
-                if nodo.active:
-                    colores.append('#88C139')
-                else:
-                    colores.append('#878787')
-
-            coordenadas_x = [1, 1, 1, 4, 5]
-            coordenadas_y = [10, 20, 10, 25, 20]
-        else:
-            names = []
-            values = []
-            colores = []
-            coordenadas_x = []
-            coordenadas_y = []
-
         activateg = request.GET.get('activateg')
+        print(activateg)
         if activateg:
-            response = requests.get('http://servicio1:8000/api/activateg/')
+            response = requests.get('http://127.0.0.1:8000/api/activateg/')
             data = response
             return redirect('getGateway')
         stop = request.GET.get('stop')
         if stop:
-            response = requests.get('http://servicio1:8000/api/deactivateg/')
+            response = requests.get('http://127.0.0.1:8000/api/deactivateg/')
             data = response
             return redirect('getGateway')
 
         reload = request.GET.get('reload')
         if reload:
-            response = requests.get('http://servicio1:8000/api/getState/')
+            response = requests.get('http://127.0.0.1:8000/api/getState/')
             state = response.json()["state"]
             if state:
 
-                response = requests.get('http://servicio1:8000/api/restartGateway/')
+                response = requests.get('http://127.0.0.1:8000/api/restartGateway/')
                 
             else:
-                response = requests.get('http://servicio1:8000/api/activateg/')
+                response = requests.get('http://127.0.0.1:8000/api/activateg/')
                 
             return redirect('getGateway')
+        
             
     context = {
             'gateway': gateway,
-            'names': names,
-            'values': values,
-            'colores': colores,
-            'coordenadas_x': coordenadas_x,
-            'coordenadas_y': coordenadas_y,
         }
     
     return render(request, "gateway.html", context)
@@ -260,7 +221,7 @@ def addNode(request):
 
         name = request.GET.get('name')
         mac_address = request.GET.get('mac_address')
-        response = requests.get('http://servicio1:8000/api/getNode/',data={'mac_address': mac_address}) 
+        response = requests.get('http://127.0.0.1:8000/api/getNode/',data={'mac_address': mac_address}) 
         data = response.json()
         if response.status_code == 200:
             nodo = data["node"]
