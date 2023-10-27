@@ -44,7 +44,7 @@
   </nav>
   <hr class="" color="#4CA1D9" style="width: 100%;">
       <div class="p-3">
-      <form action="{% url 'getNodos' %}?addnode=1" method="post">
+      <form action="{% url 'getNodos' %}?addnode=1&mac_address={{mac_address}}" method="post">
         {% csrf_token %}
         <div class="container-fluid">
             <div
@@ -62,10 +62,18 @@
                                 <input type="text" class="form-control" id="name" name="name" placeholder="11111111-1" value="{{name}}" >
                                 <label for="floatingInput">Name</label>
                             </div>
-                            <div class="form-floating mb-3">
+                            {% if mac_address %}
+                                <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="mac_address" name="mac_address" placeholder="11111111-1" value="{{mac_address}}" disabled>
                                 <label for="floatingInput">MAC Address</label>
                             </div>
+                            {% else %}
+                                <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="mac_address" name="mac_address" placeholder="11111111-1" value="">
+                                <label for="floatingInput">MAC Address</label>
+                                </div>
+                            {% endif %}
+                            
                             <div class="form-floating mb-3">
                               <input type="text" class="form-control" id="listening_time" name="listening_time" placeholder="11111111-1" value="{{listening_time}}" >
                               <label for="floatingInput">Listening Time</label>
@@ -85,11 +93,16 @@
                                 </select>
                                 
                             </div>
+                            <form action="" method="post">
                             <div class="text-center mb-3">
-                                <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                <a href="{% url 'getNodos' %}?addnode=1&mac_address={{mac_address}}">
+                                  <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
                                     Save
                                 </button>
+                              </a>
+                                
                             </div>
+                          </form>
                         </div>
                     </div>
                 </div>

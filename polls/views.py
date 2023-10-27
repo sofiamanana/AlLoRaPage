@@ -14,18 +14,19 @@ import zipfile
 import shutil
 import logging
 
-logging.basicConfig(level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 puerto = os.environ["PORT_API"]
+#puerto = '8004'
 logging.info(puerto)
 URL = os.environ["URL"]
+#URL = 'http://localhost:' + puerto
 logging.info(URL)
 
 
 def index(request):
-    return HttpResponse("Hello, world. You're at the polls index.")
+    return HttpResponse("Hello, world. You're at the AlLoRa App Server index.")
 
 def getNodos(request):
-
 
     response = requests.get(URL +'/api/nodes/')
 
@@ -91,7 +92,6 @@ def getNodos(request):
                 
                 if response.status_code == 200:
                     data = response.json()
-                    print(data)
                     
                     nombre_archivo = "data.json"
                     cur_path = settings.BASE_DIR
@@ -148,11 +148,14 @@ def getNodos(request):
 
     if request.method == 'POST':
         name = request.POST.get('name')
-        mac_address = request.POST.get('mac_address')
+        mac_address = request.GET.get('mac_address')
         sleep_mesh = request.POST.get('sleep_mesh')
         active = request.POST.get('active')
         listening_time = request.POST.get('listening_time')
-
+        if mac_address:
+            pass
+        else:
+            mac_address = request.POST.get('mac_address')
         nodo = {
             'name': name,
             'mac_address': mac_address,
@@ -162,19 +165,19 @@ def getNodos(request):
         }
         
 
+        print(mac_address)
+        
+
         response = requests.get(URL +'/api/getNode/',data={'mac_address': mac_address}) 
 
         data = response.json()
-        print('entre2')
-        print(data)
-        print(nodo)
         if response.status_code == 200:
+            print('aaaaa',data['node'])
             if data["node"]:
 
                 response = requests.post(URL +'/api/updateNode/',data=nodo) 
 
                 data = response
-                print('entre3')
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
@@ -212,7 +215,6 @@ def getGateway(request):
             gateway = []
             
         activateg = request.GET.get('activateg')
-        print(activateg)
         if activateg:
 
             response = requests.get(URL +'/api/activateg/')
@@ -254,12 +256,15 @@ def addNode(request):
 
         name = request.GET.get('name')
         mac_address = request.GET.get('mac_address')
+        print(name,mac_address)
 
         response = requests.get(URL +'/api/getNode/',data={'mac_address': mac_address}) 
 
         data = response.json()
         if response.status_code == 200:
+            
             nodo = data["node"]
+            print(nodo)
             if nodo:
                 name = nodo['name']
                 mac_address = nodo['mac_address']
@@ -272,6 +277,7 @@ def addNode(request):
                 sleep_mesh = ''
                 active = ''
                 listening_time = ''
+        
 
     context = {
         'name': name,
