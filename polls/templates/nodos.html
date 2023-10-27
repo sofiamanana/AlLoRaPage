@@ -161,10 +161,10 @@
                                 
                             </td>
                             
-                                <form action="" method="get">
+                                <form action="" method="post">
                                     <td>{{nodo.listening_time}}</td>
                                     <td>
-                                    <a href="{% url 'addNode' %}?mac_address={{nodo.mac_address}}">
+                                    <a href="{% url 'addNode' %}?name={{nodo.name}}&mac_address={{nodo.mac_address}}">
                                     <button
                                         type="button"
                                         class="btn btn-floating"

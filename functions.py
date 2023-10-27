@@ -1,11 +1,12 @@
 import classes
 from typing import List
-import json
 
 def rowsToNodo(rows: list) -> List[classes.Nodo]:
     retorno = []
     for r in rows["nodes"]:
         r = list(r.values())
+        while len(r) < 5:
+            r.append('')
         retorno.append(classes.Nodo(r))
     return retorno
 
