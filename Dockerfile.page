@@ -10,6 +10,4 @@ COPY . .
 
 EXPOSE 8005
 
-WORKDIR /app/AlLoRaPage
-
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8005"]
