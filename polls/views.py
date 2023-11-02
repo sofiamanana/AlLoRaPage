@@ -15,12 +15,12 @@ import shutil
 import logging
 
 #logging.basicConfig(level=logging.INFO)
-puerto = os.environ["PORT_API"]
-#puerto = '8004'
-logging.info(puerto)
-URL = os.environ["URL"]
-#URL = 'http://localhost:' + puerto
-logging.info(URL)
+#puerto = os.environ["PORT_API"]
+puerto = '8004'
+#logging.info(puerto)
+#URL = os.environ["URL"]
+URL = 'http://localhost:' + puerto
+#logging.info(URL)
 
 
 def index(request):
@@ -200,7 +200,6 @@ def getNodos(request):
 
 def getGateway(request):
     if request.method == 'GET':
-        
 
         response = requests.get(URL +'/api/gateway/')
         data = response

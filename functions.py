@@ -14,8 +14,8 @@ def jsonToGateway(rows: list, state: bool) -> List[classes.Gateway]:
 
     r = list(list(rows.values())[0].values())
   
-    l = r[:4]
-    d = list(r[4].values())
+    l = r[:5]
+    d = list(r[5].values())
     for i in d:
         l.append(i)
     l.append(state)
