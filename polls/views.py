@@ -19,7 +19,8 @@ import logging
 puerto = '8004'
 #logging.info(puerto)
 #URL = os.environ["URL"]
-URL = 'http://localhost:' + puerto
+#URL = 'http://localhost:' + puerto
+URL = "http://servicio1:" + puerto
 #logging.info(URL)
 
 
