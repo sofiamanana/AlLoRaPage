@@ -132,17 +132,48 @@
           </div>
         </form>
     </div>
-    <div class="row justify-content-center">
-      <div class="col-6">
-        <div id="map"></div>
-      </div>
+    <div class="p-3">
+                <div class="row justify-content-center">
+                  <div class="col-10">
+                    <div class="card p-2">
+                      <div class="container">
+                        <form action="{% url 'getGateway' %}?save=1" method="post">
+                          {% csrf_token %}
+                            <div class="row">
+                                <div class="col p-2">
+                                    <div class="form-group">
+                                        <label for="serial_port">Serial Port</label>
+                                        <input type="text" class="form-control" id="serial_port" name="serial_port" value="{{gateway.serial_port}}">
+                                    </div>
+                                </div>
+                                <div class="col p-2">
+                                    <div class="form-group">
+                                        <label for="result_path">Files Folder</label>
+                                        <input type="text" class="form-control" id="result_path" name="result_path" value="{{gateway.result_path}}">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center p-2">
+                              <a href="{% url 'getGateway' %}?save=1">
+                                <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                  Save
+                              </button>
+                            </a>
+                          </div>
+                          </form>
+                    </div>
+                  </div>
+                  
+                  
+              
+              </div>
+          
+        </div>
+      
+  </div>
+
+    
+
 </body>
-<script>
-  var map = L.map('map').setView([51.505, -0.09], 13);
-  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap'
-  }).addTo(map);
-</script>
 
 </html>

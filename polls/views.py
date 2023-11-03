@@ -19,8 +19,8 @@ import logging
 puerto = '8004'
 #logging.info(puerto)
 #URL = os.environ["URL"]
-#URL = 'http://localhost:' + puerto
-URL = "http://servicio1:" + puerto
+URL = 'http://localhost:' + puerto
+#URL = "http://servicio1:" + puerto
 #logging.info(URL)
 
 
@@ -173,7 +173,7 @@ def getNodos(request):
 
         data = response.json()
         if response.status_code == 200:
-            print('aaaaa',data['node'])
+
             if data["node"]:
 
                 response = requests.post(URL +'/api/updateNode/',data=nodo) 
@@ -240,10 +240,25 @@ def getGateway(request):
                 
             else:
                 response = requests.get(URL +'/api/activateg/')
-
                 
             return redirect('getGateway')
         
+    
+    if request.method == 'POST':
+        serial_port = request.POST.get('serial_port')
+        result_path = request.POST.get('result_path')
+        print(serial_port, result_path)
+
+        response = requests.post(URL +'/api/setSerialPort/',data={'serial_port': serial_port})
+
+        response2 = requests.post(URL +'/api/setResultPath/',data={'result_path': result_path})
+        if response.status_code == 200 and response2.status_code == 200:
+            response = requests.get(URL +'/api/restartGateway/')
+
+            return redirect('getGateway')
+        else:
+            gateway = []
+
             
     context = {
             'gateway': gateway,
