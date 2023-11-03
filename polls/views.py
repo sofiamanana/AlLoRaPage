@@ -54,6 +54,7 @@ def getNodos(request):
                 if response.status_code == 200: 
                     data = response.json()
                     rows = functions.rowsToNodo(data)
+                    response = requests.get(URL +'/api/restartGateway/')
                     return redirect('getNodos')
             if mesh:
 
@@ -63,6 +64,7 @@ def getNodos(request):
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
+                    response = requests.get(URL +'/api/restartGateway/')
                     return redirect('getNodos')
             if erase:
 
@@ -72,6 +74,7 @@ def getNodos(request):
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
+                    response = requests.get(URL +'/api/restartGateway/')
                     return redirect('getNodos')
             if download:
                 #limpiar static:
@@ -182,6 +185,7 @@ def getNodos(request):
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
+                    response = requests.get(URL +'/api/restartGateway/')
                     return redirect('getNodos')
             else:
 
@@ -191,6 +195,7 @@ def getNodos(request):
                 if response.status_code == 200:
                     data = response.json()
                     rows = functions.rowsToNodo(data)
+                    response = requests.get(URL +'/api/restartGateway/')
                     return redirect('getNodos')
 
     context = {
@@ -220,6 +225,7 @@ def getGateway(request):
             response = requests.get(URL +'/api/activateg/')
 
             data = response
+
             return redirect('getGateway')
         stop = request.GET.get('stop')
         if stop:

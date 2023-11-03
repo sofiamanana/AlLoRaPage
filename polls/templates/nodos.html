@@ -60,20 +60,23 @@
                 <div class="card p-2">
                     
                 <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-sm">
+                    <div class="row">
+                        <div class="col ">
                             <form action="{% url 'addNode' %}" method="get">
-                                <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                <button type="submit" class="btn btn-primary " style="background-color:#4CA1D9; border-color: #4CA1D9;">
                                 <a href="{% url 'addNode' %}" class="text-light">Add Node</a>
                                 </button>
                             </form>
                             
                           </div>
-                          <div class="col-sm"></div>
-                          <div class="col-sm"></div>
-                          <div class="col-sm justify-content-end">
+                          <div class="col"></div>
+                          <div class="col"></div>
+                          <div class="col"></div>
+                          <div class="col"></div>
+                          <div class="col"></div>
+                          <div class="col">
                             <form action="{% url 'getNodos' %}" method="get">
-                                    <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                                    <button type="submit" class="btn btn-primary" style="background-color:#4CA1D9; border-color: #4CA1D9;">
                                 <a href="{% url 'getNodos' %}?download_all=1" class="text-light">Download All</a>
                                 </button>
                             </form>
@@ -206,7 +209,15 @@
                         {% endfor %}
                     </tbody>
                 </table>
+                <div class="text-center p-2">
+                    <a href="{% url 'getNodos' %}?save=1">
+                      <button type="submit" class="btn btn-primary center" style="background-color:#4CA1D9; border-color: #4CA1D9;">
+                        Save
+                    </button>
+                  </a>
+                </div>
             </div>
+            
         </div>
         </div>
     </div>
