@@ -11,6 +11,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet"/>
     <link rel="shortcut icon" href="{% static '/favicon_logo.png' %}">
     <title>AlLoRa App Server</title>
+    <link href="{% static 'styles.css' %}" rel="stylesheet">
 </head>
 <body class="back-cuerpo nav-fixed">
   <nav class="navbar navbar-expand-lg bg-body-tertiary p-2">
@@ -41,6 +42,7 @@
         
       </div>
     </div>
+    <button id="theme-toggle" class="btn btn-secondary">Toggle Theme</button>
   </nav>
   <hr class="" color="#4CA1D9" style="width: 100%;">
       <div class="p-3">
@@ -112,5 +114,27 @@
         </div>
       </form>
     </div>
+    <script>
+      // Theme toggling script
+      function toggleTheme() {
+          const body = document.body;
+          body.classList.toggle('body-dark');
+          // Save theme preference in local storage
+          localStorage.setItem('theme', body.classList.contains('body-dark') ? 'dark' : 'light');
+      }
+  
+      // Apply saved theme on page load
+      document.addEventListener('DOMContentLoaded', () => {
+          if (localStorage.getItem('theme') === 'dark') {
+              document.body.classList.add('body-dark');
+          }
+      });
+  
+      // Attach event listener to the toggle button
+      const themeToggleButton = document.getElementById('theme-toggle');
+      if (themeToggleButton) {
+          themeToggleButton.addEventListener('click', toggleTheme);
+      }
+  </script>
 </body>
 </html>

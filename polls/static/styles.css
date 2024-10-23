@@ -1,0 +1,24 @@
+:root {
+    /* Base colors */
+    --primary-color: #4CA1D9;
+    --secondary-color: #88C139;
+    --danger-color: #DA3636;
+    --text-color: #000;
+    --background-color: #fff;
+}
+
+.body-dark {
+    /* Dark theme colors */
+    --text-color: #fff;
+    --background-color: #333;
+}
+
+.btn:hover, .btn-floating:hover {
+    /* Button hover effect */
+    opacity: 0.85;
+}
+
+.btn:active {
+    /* Button click effect */
+    transform: scale(0.98);
+}

@@ -28,11 +28,17 @@ def index(request):
     return HttpResponse("Hello, world. You're at the AlLoRa App Server index.")
 
 def getNodos(request):
+    rows = []
+    try:
+        response = requests.get(URL +'/api/nodes/')
 
-    response = requests.get(URL +'/api/nodes/')
+        data = response
 
-    data = response
+        if response.status_code == 200:
+            data = response.json()
+            rows = functions.rowsToNodo(data)
 
+<<<<<<< Updated upstream
     if response.status_code == 200:
         data = response.json()
         rows = functions.rowsToNodo(data)
@@ -92,63 +98,120 @@ def getNodos(request):
                     os.remove(ruta_archivo)
 
                 response = requests.get(URL +'/api/downloadDataNode/',data={'node': nodo})
+=======
+            nodo = request.GET.get('nodo')
+>>>>>>> Stashed changes
 
+            if nodo:
+                active = request.GET.get('active')
+                mesh = request.GET.get('mesh')
+                erase = request.GET.get('erase')
+                download = request.GET.get('download')
                 
-                if response.status_code == 200:
-                    data = response.json()
-                    
-                    nombre_archivo = "data.json"
+
+                if active:
+
+                    response = requests.post(URL +'/api/setActiveNode/',data={'nodo': nodo}) 
+
+                    data = response
+                    if response.status_code == 200: 
+                        data = response.json()
+                        rows = functions.rowsToNodo(data)
+                        return redirect('getNodos')
+                if mesh:
+
+                    response = requests.post(URL +'/api/setMeshNode/',data={'nodo': nodo}) 
+
+                    data = response
+                    if response.status_code == 200:
+                        data = response.json()
+                        rows = functions.rowsToNodo(data)
+                        return redirect('getNodos')
+                if erase:
+
+                    response = requests.post(URL +'/api/deleteNode/',data={'nodo': nodo}) 
+
+                    data = response
+                    if response.status_code == 200:
+                        data = response.json()
+                        rows = functions.rowsToNodo(data)
+                        return redirect('getNodos')
+                if download:
+                    #limpiar static:
+                    cur_path = settings.BASE_DIR
+                    ruta_json = str(Path(cur_path, 'polls/', 'static/data_all/'))
+                    directorios = next(os.walk(ruta_json))[1]
+                    for directorio in directorios:
+                        ruta_carpeta = Path(ruta_json, directorio)
+                        shutil.rmtree(ruta_carpeta)
                     cur_path = settings.BASE_DIR
                     ruta_json = str(Path(cur_path, 'polls/', 'static/data/'))
-                    ruta_json = str(Path(ruta_json, nombre_archivo))
+                    archivos = os.listdir(ruta_json)
+                    for archivo in archivos:
+                        ruta_archivo = Path(ruta_json, archivo)
+                        os.remove(ruta_archivo)
 
-                    with open(ruta_json, 'w') as archivo:
-                        json.dump(data, archivo)
+                    response = requests.get(URL +'/api/downloadDataNode/',data={'node': nodo})
+
+                    
+                    if response.status_code == 200:
+                        data = response.json()
                         
-                    with open(ruta_json, "rb") as fprb:
-                        response = HttpResponse(fprb.read(), content_type="json")
-                        response["Content-Disposition"] = "attachment; filename=data.json"
-                        return response
-                #AGREGAR CATCH
-            
+                        nombre_archivo = "data.json"
+                        cur_path = settings.BASE_DIR
+                        ruta_json = str(Path(cur_path, 'polls/', 'static/data/'))
+                        ruta_json = str(Path(ruta_json, nombre_archivo))
+
+                        with open(ruta_json, 'w') as archivo:
+                            json.dump(data, archivo)
+                            
+                        with open(ruta_json, "rb") as fprb:
+                            response = HttpResponse(fprb.read(), content_type="json")
+                            response["Content-Disposition"] = "attachment; filename=data.json"
+                            return response
+                    #AGREGAR CATCH
                 
-        download_all = request.GET.get('download_all')
-        if download_all:
-            print('download all')
+                    
+            download_all = request.GET.get('download_all')
+            if download_all:
+                print('download all')
+                
+
+                response = requests.get(URL +'/api/downloadAll/')
+
+                data = response.json()
+                nombre_archivo = "data.json"
+                cur_path = settings.BASE_DIR
+                ruta_json = Path(cur_path, 'polls/', 'static/data_all/')
+                i = 0
+                nombres_archivos = []
+                for mac in data["mac_address"]:
+                    nombres_archivos.append(mac)
+                    ruta = Path(ruta_json, mac)
+                    ruta.mkdir(parents=True, exist_ok=True)
+                    ruta_j = str(Path(ruta, nombre_archivo))
+                    with open(ruta_j, 'w') as archivo:
+                        json.dump(data["data"][i], archivo)
+                    i+=1
+                cur_path = settings.BASE_DIR
+                ruta_carpeta = Path(cur_path, 'polls/', 'static/data_all/')
+                buffer = io.BytesIO()
+                with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_buffer:
+                    for root, _, files in os.walk(ruta_carpeta):
+                        for archivo in files:
+                            ruta_archivo = os.path.join(root, archivo)
+                            rel_path = os.path.relpath(ruta_archivo, ruta_carpeta)
+                            zip_buffer.write(ruta_archivo, arcname=rel_path)
+                response = HttpResponse(buffer.getvalue(), content_type='application/zip')
+                response['Content-Disposition'] = 'attachment; filename="files.zip"'
+                return response
+                
+
+        else:
+            rows = []
             
-
-            response = requests.get(URL +'/api/downloadAll/')
-
-            data = response.json()
-            nombre_archivo = "data.json"
-            cur_path = settings.BASE_DIR
-            ruta_json = Path(cur_path, 'polls/', 'static/data_all/')
-            i = 0
-            nombres_archivos = []
-            for mac in data["mac_address"]:
-                nombres_archivos.append(mac)
-                ruta = Path(ruta_json, mac)
-                ruta.mkdir(parents=True, exist_ok=True)
-                ruta_j = str(Path(ruta, nombre_archivo))
-                with open(ruta_j, 'w') as archivo:
-                    json.dump(data["data"][i], archivo)
-                i+=1
-            cur_path = settings.BASE_DIR
-            ruta_carpeta = Path(cur_path, 'polls/', 'static/data_all/')
-            buffer = io.BytesIO()
-            with zipfile.ZipFile(buffer, 'w', zipfile.ZIP_DEFLATED) as zip_buffer:
-                for root, _, files in os.walk(ruta_carpeta):
-                    for archivo in files:
-                        ruta_archivo = os.path.join(root, archivo)
-                        rel_path = os.path.relpath(ruta_archivo, ruta_carpeta)
-                        zip_buffer.write(ruta_archivo, arcname=rel_path)
-            response = HttpResponse(buffer.getvalue(), content_type='application/zip')
-            response['Content-Disposition'] = 'attachment; filename="files.zip"'
-            return response
-            
-
-    else:
-        rows = []
+    except ConnectionError as e:
+        logging.error(f"Failed to connect to the API at {URL}/api/nodes/. Exception: {e}")
 
     if request.method == 'POST':
         name = request.POST.get('name')
